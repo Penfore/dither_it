@@ -16,3 +16,17 @@ dependencies:
 ```
 
 Then run flutter pub get or dart pub get to install the package.
+
+### Example
+```dart
+void main() {
+  // Load or create an image
+  final Image image = decodeImage(File('{path}/test.png').readAsBytesSync())!;
+
+  // Apply Floyd-Steinberg dithering
+  final Image ditheredImage = DitherIt.floydSteinberg(image: image);
+
+  // Save the dithered image
+  File('{path}/dithered_image.png').writeAsBytesSync(encodePng(ditheredImage));
+}
+  ```
