@@ -1,7 +1,7 @@
 name: dither_it
 description: DitherIt is a Dart library that implements various dithering algorithms.
 version: 0.0.1
-homepage:
+homepage: https://github.com/Penfore/dither_it
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
