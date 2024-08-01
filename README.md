@@ -8,11 +8,14 @@ DitherIt is a Dart library that implements various dithering algorithms. The lib
 
 ## Installation
 
-Add `dither_it` to your `pubspec.yaml`:
+Add `dither_it` to your `pubspec.yaml` via git (it will be avaiable on pub.dev in the future):
 
 ```yaml
 dependencies:
   dither_it:
+    git:
+      url: https://github.com/Penfore/dither_it.git
+      ref: main
 ```
 
 Then run flutter pub get or dart pub get to install the package.
