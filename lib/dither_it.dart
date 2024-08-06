@@ -10,7 +10,7 @@ class DitherIt {
   /// [image]: The input image to be dithered.
   ///
   /// Returns the dithered image.
-  static floydSteinberg({required Image image}) {
+  static Image floydSteinberg({required Image image}) {
     final Image newImage = Image.from(image);
 
     for (int y = 0; y < image.height; y++) {
