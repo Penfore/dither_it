@@ -1,4 +1,24 @@
 include: package:flutter_lints/flutter.yaml
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+analyzer:
+  errors:
+    avoid_print: ignore
+
+linter:
+  rules:
+    lines_longer_than_80_chars: false
+    annotate_overrides: true
+    avoid_as: true
+    avoid_empty_else: true
+    avoid_relative_lib_imports: true
+    avoid_print: true
+    flutter_style_todos: true
+    no_default_cases: true
+    cascade_invocations: false
+    unnecessary_this: false
+    use_setters_to_change_properties: false
+    avoid_catching_errors: false
+    prefer_constructors_over_static_methods: false
+    always_declare_return_types: true
+    library_private_types_in_public_api: false
+    avoid_function_literals_in_foreach_calls: false
