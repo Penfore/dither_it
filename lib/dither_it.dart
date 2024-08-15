@@ -94,12 +94,15 @@ class DitherIt {
   ///
   /// Throws an [ArgumentError] if the matrix size exceeds the maximum allowed size of 8.
   static Image ordered({required Image image, required int matrixSize}) {
+    if (matrixSize < 2 || (matrixSize & (matrixSize - 1)) != 0) {
+      throw ArgumentError('The size must be a power of 2 and greater than or equal to 2.');
+    }
     if (matrixSize > _maxMatrixSize) {
       throw ArgumentError('Matrix size exceeds the maximum allowed size of $_maxMatrixSize.');
     }
 
     final Image newImage = Image.from(image);
-    final List<List<double>> thresholdMap = generateBayerMatrix(matrixSize);
+    final List<List<double>> thresholdMap = _precomputedBayerMatrices[matrixSize]!;
     final int mapSize = matrixSize;
 
     for (int y = 0; y < image.height; y++) {
@@ -126,54 +129,5 @@ class DitherIt {
     }
 
     return newImage;
-  }
-
-  /// Generates a Bayer matrix of the specified size for ordered dithering.
-  ///
-  /// [size]: The size of the Bayer matrix. Must be a power of 2 and greater than or equal to 2.
-  ///
-  /// WARNING: Generating a matrix larger than 8x8 is computationally expensive
-  /// and not recommended as it can significantly impact the performance of
-  /// your device.
-  ///
-  /// Returns a 2D list representing the Bayer matrix.
-  ///
-  /// Throws an [ArgumentError] if the size is not a power of 2 or is less than 2.
-  static List<List<double>> generateBayerMatrix(int size) {
-    if (_precomputedBayerMatrices.containsKey(size)) {
-      return _precomputedBayerMatrices[size]!;
-    }
-
-    if (size < 2 || (size & (size - 1)) != 0) {
-      throw ArgumentError('The size must be a power of 2 and greater than or equal to 2.');
-    }
-
-    final List<List<double>> baseMatrix = [
-      [0.0, 0.5],
-      [0.75, 0.25]
-    ];
-
-    List<List<double>> expandMatrix(List<List<double>> matrix, int n) {
-      if (n == 1) {
-        return matrix;
-      }
-
-      final int newSize = matrix.length * 2;
-      final List<List<double>> expanded = List.generate(newSize, (_) => List.filled(newSize, 0.0));
-
-      for (int i = 0; i < matrix.length; i++) {
-        for (int j = 0; j < matrix[i].length; j++) {
-          final double value = matrix[i][j];
-          expanded[i][j] = value / 2.0;
-          expanded[i][j + matrix.length] = value / 2.0 + 0.5;
-          expanded[i + matrix.length][j] = value / 2.0 + 0.75;
-          expanded[i + matrix.length][j + matrix.length] = value / 2.0 + 0.25;
-        }
-      }
-
-      return expandMatrix(expanded, n - 1);
-    }
-
-    return expandMatrix(baseMatrix, (size ~/ 2).bitLength - 1);
   }
 }
