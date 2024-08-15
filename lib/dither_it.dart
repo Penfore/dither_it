@@ -2,6 +2,8 @@ library dither_it;
 
 import 'package:image/image.dart';
 
+part 'bayer_matrices.dart';
+
 /// A library that implements various dithering algorithms.
 class DitherIt {
   /// Applies the Floyd-Steinberg dithering algorithm to the provided image.
@@ -77,5 +79,101 @@ class DitherIt {
   /// Returns the clamped value.
   static int _clamp(int value) {
     return value.clamp(0, 255);
+  }
+
+  static const int _maxMatrixSize = 8;
+
+  /// Applies the Ordered Dithering algorithm to the provided image.
+  /// https://en.wikipedia.org/wiki/Ordered_dithering
+  ///
+  /// [image]: The input image to be dithered.
+  ///
+  /// [matrixSize]: The size of the Bayer matrix to use for dithering. Must be a power of 2, greater than or equal to 2, and less than or equal to 8.
+  ///
+  /// Returns the dithered image.
+  ///
+  /// Throws an [ArgumentError] if the matrix size exceeds the maximum allowed size of 8.
+  static Image ordered({required Image image, required int matrixSize}) {
+    if (matrixSize > _maxMatrixSize) {
+      throw ArgumentError('Matrix size exceeds the maximum allowed size of $_maxMatrixSize.');
+    }
+
+    final Image newImage = Image.from(image);
+    final List<List<double>> thresholdMap = generateBayerMatrix(matrixSize);
+    final int mapSize = matrixSize;
+
+    for (int y = 0; y < image.height; y++) {
+      for (int x = 0; x < image.width; x++) {
+        final Pixel currentPixel = newImage.getPixel(x, y);
+        final int thresholdX = x % mapSize;
+        final int thresholdY = y % mapSize;
+        final double threshold = thresholdMap[thresholdY][thresholdX];
+
+        final int currentRed = currentPixel.r.toInt();
+        final int currentGreen = currentPixel.g.toInt();
+        final int currentBlue = currentPixel.b.toInt();
+
+        final double normalizedRed = (currentRed / 255.0) + (threshold - 0.5);
+        final double normalizedGreen = (currentGreen / 255.0) + (threshold - 0.5);
+        final double normalizedBlue = (currentBlue / 255.0) + (threshold - 0.5);
+
+        final int newRed = _findClosestColor((normalizedRed * 255).round());
+        final int newGreen = _findClosestColor((normalizedGreen * 255).round());
+        final int newBlue = _findClosestColor((normalizedBlue * 255).round());
+
+        newImage.setPixelRgb(x, y, newRed, newGreen, newBlue);
+      }
+    }
+
+    return newImage;
+  }
+
+  /// Generates a Bayer matrix of the specified size for ordered dithering.
+  ///
+  /// [size]: The size of the Bayer matrix. Must be a power of 2 and greater than or equal to 2.
+  ///
+  /// WARNING: Generating a matrix larger than 8x8 is computationally expensive
+  /// and not recommended as it can significantly impact the performance of
+  /// your device.
+  ///
+  /// Returns a 2D list representing the Bayer matrix.
+  ///
+  /// Throws an [ArgumentError] if the size is not a power of 2 or is less than 2.
+  static List<List<double>> generateBayerMatrix(int size) {
+    if (_precomputedBayerMatrices.containsKey(size)) {
+      return _precomputedBayerMatrices[size]!;
+    }
+
+    if (size < 2 || (size & (size - 1)) != 0) {
+      throw ArgumentError('The size must be a power of 2 and greater than or equal to 2.');
+    }
+
+    final List<List<double>> baseMatrix = [
+      [0.0, 0.5],
+      [0.75, 0.25]
+    ];
+
+    List<List<double>> expandMatrix(List<List<double>> matrix, int n) {
+      if (n == 1) {
+        return matrix;
+      }
+
+      final int newSize = matrix.length * 2;
+      final List<List<double>> expanded = List.generate(newSize, (_) => List.filled(newSize, 0.0));
+
+      for (int i = 0; i < matrix.length; i++) {
+        for (int j = 0; j < matrix[i].length; j++) {
+          final double value = matrix[i][j];
+          expanded[i][j] = value / 2.0;
+          expanded[i][j + matrix.length] = value / 2.0 + 0.5;
+          expanded[i + matrix.length][j] = value / 2.0 + 0.75;
+          expanded[i + matrix.length][j + matrix.length] = value / 2.0 + 0.25;
+        }
+      }
+
+      return expandMatrix(expanded, n - 1);
+    }
+
+    return expandMatrix(baseMatrix, (size ~/ 2).bitLength - 1);
   }
 }
