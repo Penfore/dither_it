@@ -1,10 +1,12 @@
 # DitherIt
 
-DitherIt is a Dart library that implements various dithering algorithms. The library currently supports the Floyd-Steinberg dithering algorithm, which can be used to apply dithering to images, reducing the number of colors while maintaining visual quality.
+DitherIt is a Dart library that implements dithering algorithms for image processing. The library currently supports Floyd-Steinberg and Ordered dithering algorithms, allowing you to apply these dithering techniques to images to reduce the number of colors used while maintaining visual quality.
 
 ## Features
 
-- Applies the Floyd-Steinberg dithering algorithm to images.
+- Floyd-Steinberg Dithering: Applies the Floyd-Steinberg dithering algorithm to an image. This well-known dithering method propagates the quantization error to neighboring pixels, enhancing the visual quality of images with reduced colors.
+
+- Ordered Dithering: Applies the Ordered dithering (or Bayer matrix dithering) algorithm to an image. This algorithm uses a predefined threshold matrix to determine which pixels should be adjusted, providing a regular and repetitive dithering pattern.
 
 ## Installation
 
@@ -29,7 +31,15 @@ void main() {
   // Apply Floyd-Steinberg dithering
   final Image ditheredImage = DitherIt.floydSteinberg(image: image);
 
+  // Apply Ordered dithering with different Bayer matrix sizes
+  final Image orderedDitheredImage = DitherIt.ordered(image: image, matrixSize: 2);
+  final Image ordered4DitheredImage = DitherIt.ordered(image: image, matrixSize: 4);
+  final Image ordered8DitheredImage = DitherIt.ordered(image: image, matrixSize: 8);
+
   // Save the dithered image
-  File('{path}/dithered_image.png').writeAsBytesSync(encodePng(ditheredImage));
+  File('{path}/floyd_steinberg_dithered_image.png').writeAsBytesSync(encodePng(floydSteinbergDitheredImage));
+  File('{path}/ordered_dithered_image.png').writeAsBytesSync(encodePng(orderedDitheredImage));
+  File('{path}/ordered4_dithered_image.png').writeAsBytesSync(encodePng(ordered4DitheredImage));
+  File('{path}/ordered8_dithered_image.png').writeAsBytesSync(encodePng(ordered8DitheredImage));
 }
   ```
