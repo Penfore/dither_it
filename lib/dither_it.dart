@@ -1,5 +1,7 @@
 library dither_it;
 
+import 'dart:math';
+
 import 'package:image/image.dart';
 
 part 'bayer_matrices.dart';
@@ -129,5 +131,89 @@ class DitherIt {
     }
 
     return newImage;
+  }
+
+  /// Applies the Riemersma dithering algorithm to the provided image.
+  /// https://www.compuphase.com/riemer.htm
+  ///
+  /// This dithering algorithm uses a Hilbert curve pattern to distribute
+  /// quantization errors across subsequent pixels, providing a more
+  /// natural-looking error diffusion compared to matrix-based approaches.
+  ///
+  /// [image]: The input image to be dithered.
+  /// [historySize]: The number of previous errors to consider (typical 16-32).
+  ///                Default is 16.
+  ///
+  /// Returns the dithered image.
+  static Image riemersma({required Image image, int historySize = 16}) {
+    final Image newImage = Image.from(image);
+
+    final List<double> redErrors = [];
+    final List<double> greenErrors = [];
+    final List<double> blueErrors = [];
+
+    for (int y = 0; y < newImage.height; y++) {
+      for (int x = 0; x < newImage.width; x++) {
+        final Pixel pixel = newImage.getPixel(x, y);
+
+        final int origRed = pixel.r.toInt();
+        final int origGreen = pixel.g.toInt();
+        final int origBlue = pixel.b.toInt();
+
+        final double redError = _calculateChannelError(origRed, redErrors, historySize);
+        final int newRed = _findClosestColor((origRed + redError).round());
+
+        final double greenError = _calculateChannelError(origGreen, greenErrors, historySize);
+        final int newGreen = _findClosestColor((origGreen + greenError).round());
+
+        final double blueError = _calculateChannelError(origBlue, blueErrors, historySize);
+        final int newBlue = _findClosestColor((origBlue + blueError).round());
+
+        newImage.setPixelRgb(x, y, newRed, newGreen, newBlue);
+        _updateErrorHistory(redErrors, origRed - newRed + redError, historySize);
+        _updateErrorHistory(greenErrors, origGreen - newGreen + greenError, historySize);
+        _updateErrorHistory(blueErrors, origBlue - newBlue + blueError, historySize);
+      }
+    }
+
+    return newImage;
+  }
+
+  /// Calculates the weighted error contribution for a single color channel
+  /// using an exponential decay of historical errors.
+  ///
+  /// [value]: Original color channel value (0-255)
+  /// [errors]: List of previous quantization errors for this channel
+  /// [historySize]: Maximum number of historical errors to consider
+  ///
+  /// Returns the calculated error contribution to apply to the current pixel,
+  /// with weights following the pattern 1/2, 1/4, 1/8... based on error age.
+  static double _calculateChannelError(int value, List<double> errors, int historySize) {
+    if (errors.isEmpty) return 0;
+
+    double weightSum = 0;
+    double errorSum = 0;
+
+    for (int i = 0; i < errors.length; i++) {
+      final double weight = pow(2, -(historySize - i)).toDouble();
+      weightSum += weight;
+      errorSum += errors[i] * weight;
+    }
+
+    return errorSum / weightSum;
+  }
+
+  /// Maintains a fixed-size error history queue using FIFO (first-in, first-out)
+  /// methodology. Adds new error to the end of the list and removes the oldest
+  /// error if the history exceeds the specified size.
+  ///
+  /// [errors]: Error history list to modify
+  /// [error]: New error value to add to the history
+  /// [historySize]: Maximum number of errors to retain in the history
+  static void _updateErrorHistory(List<double> errors, double error, int historySize) {
+    errors.add(error);
+    if (errors.length > historySize) {
+      errors.removeAt(0);
+    }
   }
 }
