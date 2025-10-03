@@ -6,8 +6,6 @@
 
 DitherIt is a comprehensive Dart library that implements various dithering algorithms for image processing. Transform your images with professional-grade dithering techniques to reduce color depth while maintaining visual quality.
 
-![Dithering Example](https://raw.githubusercontent.com/Penfore/dither_it/main/assets/dithering_comparison.png)
-
 ## ✨ Features
 
 - **Floyd-Steinberg Dithering**: Classic error diffusion algorithm with fine-grained results
