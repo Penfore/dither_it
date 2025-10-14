@@ -14,12 +14,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [ ] Sierra family algorithms (Sierra, Two-Row Sierra, Sierra Lite)
 - [ ] Atkinson dithering algorithm
 - [ ] Blue noise dithering using void-and-cluster method
+- [ ] Ostromoukhov's variable error diffusion
+- [ ] Gradient-based error diffusion
 - [ ] Custom color palette support
 - [ ] Performance optimizations with isolates
 - [ ] CLI tool for batch processing
 - [ ] Web demo application
 
-## [0.0.3] - Feb, 3, 2025
+## [0.0.4] - October 14, 2025
+
+### Added
+- **Visual Examples**: Added comprehensive visual comparison section in README
+  - Original image showcase
+  - Side-by-side algorithm comparison images
+  - Example images for Floyd-Steinberg, Ordered, and Riemersma algorithms
+- **Documentation Enhancements**:
+  - Created detailed CODE_OF_CONDUCT.md following Contributor Covenant 2.1
+  - Enhanced CONTRIBUTING.md with complete contribution guidelines
+  - Added IMAGE_CREDITS.md with proper attribution for example images
+  - Improved Technical Details section in README with practical examples
+- **Example Code**:
+  - Working example demonstrating all three algorithms
+  - Batch processing example code in README
+  - Clear usage examples for each algorithm
+
+### Changed
+- **License**: Changed from BSD-3-Clause to MIT License for better compatibility
+- **README Improvements**:
+  - Updated badges to reflect current status
+  - Added visual examples section with before/after comparisons
+  - Improved algorithm comparison table with practical use cases
+  - Enhanced performance characteristics with real-world metrics
+  - Added memory usage estimates and processing time examples
+  - Clarified parallelization support for each algorithm
+- **Package Metadata**:
+  - Updated pubspec.yaml with repository and issue tracker links
+  - Enhanced package description for better discoverability
+  - Added documentation link
+
+### Fixed
+- Corrected installation instructions to show git-based installation
+- Fixed README formatting and removed duplicate content
+- Updated support section with accurate contact information
+
+### Documentation
+- Added comprehensive algorithm research notes
+- Documented 15+ additional algorithms for future implementation
+- Created roadmap with clear feature priorities
+- Improved API documentation consistency
+
+## [0.0.3] - February 3, 2025
 
 ### Added
 - Riemersma dithering algorithm implementation
