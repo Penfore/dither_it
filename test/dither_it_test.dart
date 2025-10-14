@@ -1,6 +1,6 @@
 import 'package:dither_it/dither_it.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('DitherIt', () {
@@ -18,7 +18,8 @@ void main() {
 
       for (int y = 0; y < 2; y++) {
         for (int x = 0; x < 2; x++) {
-          expect(ditheredImage.getPixel(x, y) != image.getPixel(x, y), isTrue, reason: 'Pixel at ($x,$y) should be modified');
+          expect(ditheredImage.getPixel(x, y) != image.getPixel(x, y), isTrue,
+              reason: 'Pixel at ($x,$y) should be modified');
         }
       }
     });
@@ -53,7 +54,8 @@ void main() {
 
       for (int y = 0; y < 2; y++) {
         for (int x = 0; x < 2; x++) {
-          expect(ditheredImage.getPixel(x, y) != image.getPixel(x, y), isTrue, reason: 'Pixel at ($x,$y) should be modified');
+          expect(ditheredImage.getPixel(x, y) != image.getPixel(x, y), isTrue,
+              reason: 'Pixel at ($x,$y) should be modified');
         }
       }
     });
@@ -95,7 +97,8 @@ void main() {
 
       for (int y = 0; y < 2; y++) {
         for (int x = 0; x < 2; x++) {
-          expect(ditheredImage.getPixel(x, y) != image.getPixel(x, y), isTrue, reason: 'Pixel at ($x,$y) should be modified');
+          expect(ditheredImage.getPixel(x, y) != image.getPixel(x, y), isTrue,
+              reason: 'Pixel at ($x,$y) should be modified');
         }
       }
     });
