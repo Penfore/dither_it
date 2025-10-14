@@ -6,6 +6,49 @@
 
 DitherIt is a comprehensive Dart library that implements various dithering algorithms for image processing. Transform your images with professional-grade dithering techniques to reduce color depth while maintaining visual quality.
 
+## 📸 Visual Examples
+
+See the difference dithering makes! Below are examples of each algorithm applied to the same source image:
+
+### Original Image
+<p align="center">
+  <img src="example/input.png" alt="Original Image" width="400"/>
+  <br>
+  <em>Original image (full color)</em>
+</p>
+
+### Floyd-Steinberg Dithering
+<p align="center">
+  <img src="example/output_floyd_steinberg.png" alt="Floyd-Steinberg Result" width="400"/>
+  <br>
+  <em>Floyd-Steinberg algorithm - Classic error diffusion</em>
+</p>
+
+### Ordered Dithering (Bayer Matrix)
+<p align="center">
+  <img src="example/output_ordered.png" alt="Ordered Dithering Result" width="400"/>
+  <br>
+  <em>Ordered dithering - Regular pattern-based approach</em>
+</p>
+
+### Riemersma Dithering
+<p align="center">
+  <img src="example/output_riemersma.png" alt="Riemersma Result" width="400"/>
+  <br>
+  <em>Riemersma algorithm - Hilbert curve-based natural diffusion</em>
+</p>
+
+<details>
+<summary>📷 <strong>Image Credits</strong></summary>
+
+Example image: "Small Copper Butterfly" by [Illuvis](https://pixabay.com/users/illuvis-3450147/) from [Pixabay](https://pixabay.com/photos/small-copper-butterfly-insect-9830647/)
+Used under the [Pixabay Content License](https://pixabay.com/service/license-summary/)
+
+See [example/IMAGE_CREDITS.md](example/IMAGE_CREDITS.md) for full attribution details.
+</details>
+
+---
+
 ## ✨ Features
 
 - **Floyd-Steinberg Dithering**: Classic error diffusion algorithm with fine-grained results
@@ -138,10 +181,47 @@ Future<void> processImageBatch(List<String> imagePaths) async {
 
 ## 🎨 Examples
 
-Coming soon! We're working on creating comprehensive examples:
+Check out our example code to get started quickly:
 
-- `basic_example.dart` - Simple dithering workflow (planned)
-- `comparison_example.dart` - Side-by-side algorithm comparison (planned)
+### Basic Example
+
+See [`example/dither_it_example.dart`](example/dither_it_example.dart) for a complete working example that demonstrates all three algorithms:
+
+```dart
+import 'dart:io';
+import 'package:dither_it/dither_it.dart';
+import 'package:image/image.dart';
+
+void main() async {
+  // Load an image
+  final bytes = await File('example/input.png').readAsBytes();
+  final image = decodeImage(bytes)!;
+
+  // Apply Floyd-Steinberg dithering
+  final floyd = DitherIt.floydSteinberg(image: image);
+  await File('example/output_floyd_steinberg.png').writeAsBytes(encodePng(floyd));
+
+  // Apply Ordered dithering
+  final ordered = DitherIt.ordered(image: image, matrixSize: 4);
+  await File('example/output_ordered.png').writeAsBytes(encodePng(ordered));
+
+  // Apply Riemersma dithering
+  final riemersma = DitherIt.riemersma(image: image);
+  await File('example/output_riemersma.png').writeAsBytes(encodePng(riemersma));
+
+  print('✅ Dithering complete! Check the output files.');
+}
+```
+
+### Visual Results
+
+The visual examples above show the results of running this code. Compare how each algorithm handles the same input image differently!
+
+### Coming Soon
+
+Additional examples in development:
+
+- `comparison_example.dart` - Side-by-side algorithm comparison with metrics (planned)
 - `batch_processing.dart` - Process multiple images efficiently (planned)
 - `flutter_app_example/` - Complete Flutter app with UI (planned)
 
