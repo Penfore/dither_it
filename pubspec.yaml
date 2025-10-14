@@ -1,6 +1,6 @@
 name: dither_it
 description: A comprehensive Dart library for image dithering with Floyd-Steinberg, Ordered (Bayer), and Riemersma algorithms. Transform images with professional-grade dithering techniques.
-version: 0.0.3
+version: 0.0.4
 repository: https://github.com/Penfore/dither_it
 issue_tracker: https://github.com/Penfore/dither_it/issues
 documentation: https://github.com/Penfore/dither_it#readme
